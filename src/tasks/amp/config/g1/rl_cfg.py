@@ -1,4 +1,4 @@
-"""RL configuration for Unitree G1 AMP walking."""
+"""RL configuration for Unitree G1 omnidirectional AMP walking."""
 
 from dataclasses import dataclass
 from typing import Tuple
@@ -41,14 +41,16 @@ G1_DEFAULT_JOINT_POS: Tuple[float, ...] = (
   0.0,
 )
 
+G1_SEED_MOTIONS: Tuple[str, ...] = (
+  "src/assets/motions/g1_seed/*.csv",
+)
+
 
 @dataclass
 class AmpRslRlOnPolicyRunnerCfg(RslRlOnPolicyRunnerCfg):
   """Runner config fields consumed by :class:`AmpOnPolicyRunner`."""
 
-  amp_motion_files: Tuple[str, ...] = (
-    "src/assets/motions/g1/walk1_subject1_0_1400.csv",
-  )
+  amp_motion_files: Tuple[str, ...] = G1_SEED_MOTIONS
   amp_motion_input_fps: float = 30.0
   amp_default_joint_pos: Tuple[float, ...] = G1_DEFAULT_JOINT_POS
   amp_num_preload_transitions: int = 200000
@@ -56,7 +58,7 @@ class AmpRslRlOnPolicyRunnerCfg(RslRlOnPolicyRunnerCfg):
   amp_batch_size: int | None = None
   amp_reward_coef: float = 1.0
   amp_reward_scale_by_dt: bool = True
-  amp_task_reward_lerp: float = 0.5
+  amp_task_reward_lerp: float = 0.8
   amp_discr_hidden_dims: Tuple[int, ...] = (1024, 512)
   amp_discr_learning_rate: float = 1.0e-4
   amp_discr_weight_decay: float = 1.0e-4
@@ -68,7 +70,7 @@ class AmpRslRlOnPolicyRunnerCfg(RslRlOnPolicyRunnerCfg):
 
 
 def unitree_g1_amp_ppo_runner_cfg() -> AmpRslRlOnPolicyRunnerCfg:
-  """Create RL runner configuration for Unitree G1 AMP walking."""
+  """Create RL runner configuration for omnidirectional AMP walking."""
   return AmpRslRlOnPolicyRunnerCfg(
     actor=RslRlModelCfg(
       hidden_dims=(512, 256, 128),

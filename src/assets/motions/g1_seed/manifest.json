@@ -1,0 +1,809 @@
+{
+  "format": "root_pos_xyz(3), root_quat_xyzw(4), joint_pos(29)",
+  "supported_source_joint_counts": [
+    23,
+    29
+  ],
+  "source_joint_names_23": [
+    "left_hip_pitch_joint",
+    "left_hip_roll_joint",
+    "left_hip_yaw_joint",
+    "left_knee_joint",
+    "left_ankle_pitch_joint",
+    "left_ankle_roll_joint",
+    "right_hip_pitch_joint",
+    "right_hip_roll_joint",
+    "right_hip_yaw_joint",
+    "right_knee_joint",
+    "right_ankle_pitch_joint",
+    "right_ankle_roll_joint",
+    "waist_yaw_joint",
+    "waist_roll_joint",
+    "waist_pitch_joint",
+    "left_shoulder_pitch_joint",
+    "left_shoulder_roll_joint",
+    "left_shoulder_yaw_joint",
+    "left_elbow_joint",
+    "right_shoulder_pitch_joint",
+    "right_shoulder_roll_joint",
+    "right_shoulder_yaw_joint",
+    "right_elbow_joint"
+  ],
+  "target_joint_names": [
+    "left_hip_pitch_joint",
+    "left_hip_roll_joint",
+    "left_hip_yaw_joint",
+    "left_knee_joint",
+    "left_ankle_pitch_joint",
+    "left_ankle_roll_joint",
+    "right_hip_pitch_joint",
+    "right_hip_roll_joint",
+    "right_hip_yaw_joint",
+    "right_knee_joint",
+    "right_ankle_pitch_joint",
+    "right_ankle_roll_joint",
+    "waist_yaw_joint",
+    "waist_roll_joint",
+    "waist_pitch_joint",
+    "left_shoulder_pitch_joint",
+    "left_shoulder_roll_joint",
+    "left_shoulder_yaw_joint",
+    "left_elbow_joint",
+    "left_wrist_roll_joint",
+    "left_wrist_pitch_joint",
+    "left_wrist_yaw_joint",
+    "right_shoulder_pitch_joint",
+    "right_shoulder_roll_joint",
+    "right_shoulder_yaw_joint",
+    "right_elbow_joint",
+    "right_wrist_roll_joint",
+    "right_wrist_pitch_joint",
+    "right_wrist_yaw_joint"
+  ],
+  "source_to_target_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    22,
+    23,
+    24,
+    25
+  ],
+  "filled_with_zero": [
+    "left_wrist_roll_joint",
+    "left_wrist_pitch_joint",
+    "left_wrist_yaw_joint",
+    "right_wrist_roll_joint",
+    "right_wrist_pitch_joint",
+    "right_wrist_yaw_joint"
+  ],
+  "motions": [
+    {
+      "input": "arc_walk_left_loop_001__A037.pkl",
+      "output": "arc_walk_left_loop_001__A037.csv",
+      "motion_key": "arc_walk_left_loop_001__A037",
+      "frames": 422,
+      "fps": 30,
+      "duration_s": 14.066666666666666,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_loop_001__A037_M.pkl",
+      "output": "arc_walk_left_loop_001__A037_M.csv",
+      "motion_key": "arc_walk_left_loop_001__A037_M",
+      "frames": 422,
+      "fps": 30,
+      "duration_s": 14.066666666666666,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_loop_001__A038.pkl",
+      "output": "arc_walk_left_loop_001__A038.csv",
+      "motion_key": "arc_walk_left_loop_001__A038",
+      "frames": 394,
+      "fps": 30,
+      "duration_s": 13.133333333333333,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_loop_001__A038_M.pkl",
+      "output": "arc_walk_left_loop_001__A038_M.csv",
+      "motion_key": "arc_walk_left_loop_001__A038_M",
+      "frames": 394,
+      "fps": 30,
+      "duration_s": 13.133333333333333,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_loop_001__A039.pkl",
+      "output": "arc_walk_left_loop_001__A039.csv",
+      "motion_key": "arc_walk_left_loop_001__A039",
+      "frames": 388,
+      "fps": 30,
+      "duration_s": 12.933333333333334,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_loop_001__A039_M.pkl",
+      "output": "arc_walk_left_loop_001__A039_M.csv",
+      "motion_key": "arc_walk_left_loop_001__A039_M",
+      "frames": 388,
+      "fps": 30,
+      "duration_s": 12.933333333333334,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_loop_001__A040.pkl",
+      "output": "arc_walk_left_loop_001__A040.csv",
+      "motion_key": "arc_walk_left_loop_001__A040",
+      "frames": 398,
+      "fps": 30,
+      "duration_s": 13.266666666666667,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_loop_001__A040_M.pkl",
+      "output": "arc_walk_left_loop_001__A040_M.csv",
+      "motion_key": "arc_walk_left_loop_001__A040_M",
+      "frames": 398,
+      "fps": 30,
+      "duration_s": 13.266666666666667,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_loop_002__A037.pkl",
+      "output": "arc_walk_left_loop_002__A037.csv",
+      "motion_key": "arc_walk_left_loop_002__A037",
+      "frames": 310,
+      "fps": 30,
+      "duration_s": 10.333333333333334,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_loop_002__A037_M.pkl",
+      "output": "arc_walk_left_loop_002__A037_M.csv",
+      "motion_key": "arc_walk_left_loop_002__A037_M",
+      "frames": 310,
+      "fps": 30,
+      "duration_s": 10.333333333333334,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_loop_002__A038.pkl",
+      "output": "arc_walk_left_loop_002__A038.csv",
+      "motion_key": "arc_walk_left_loop_002__A038",
+      "frames": 278,
+      "fps": 30,
+      "duration_s": 9.266666666666667,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_loop_002__A038_M.pkl",
+      "output": "arc_walk_left_loop_002__A038_M.csv",
+      "motion_key": "arc_walk_left_loop_002__A038_M",
+      "frames": 278,
+      "fps": 30,
+      "duration_s": 9.266666666666667,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_loop_002__A039.pkl",
+      "output": "arc_walk_left_loop_002__A039.csv",
+      "motion_key": "arc_walk_left_loop_002__A039",
+      "frames": 272,
+      "fps": 30,
+      "duration_s": 9.066666666666666,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_loop_002__A039_M.pkl",
+      "output": "arc_walk_left_loop_002__A039_M.csv",
+      "motion_key": "arc_walk_left_loop_002__A039_M",
+      "frames": 272,
+      "fps": 30,
+      "duration_s": 9.066666666666666,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_loop_002__A040.pkl",
+      "output": "arc_walk_left_loop_002__A040.csv",
+      "motion_key": "arc_walk_left_loop_002__A040",
+      "frames": 275,
+      "fps": 30,
+      "duration_s": 9.166666666666666,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_loop_002__A040_M.pkl",
+      "output": "arc_walk_left_loop_002__A040_M.csv",
+      "motion_key": "arc_walk_left_loop_002__A040_M",
+      "frames": 275,
+      "fps": 30,
+      "duration_s": 9.166666666666666,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_loop_003__A037.pkl",
+      "output": "arc_walk_left_loop_003__A037.csv",
+      "motion_key": "arc_walk_left_loop_003__A037",
+      "frames": 359,
+      "fps": 30,
+      "duration_s": 11.966666666666667,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_loop_003__A037_M.pkl",
+      "output": "arc_walk_left_loop_003__A037_M.csv",
+      "motion_key": "arc_walk_left_loop_003__A037_M",
+      "frames": 359,
+      "fps": 30,
+      "duration_s": 11.966666666666667,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_loop_003__A038.pkl",
+      "output": "arc_walk_left_loop_003__A038.csv",
+      "motion_key": "arc_walk_left_loop_003__A038",
+      "frames": 360,
+      "fps": 30,
+      "duration_s": 12.0,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_loop_003__A038_M.pkl",
+      "output": "arc_walk_left_loop_003__A038_M.csv",
+      "motion_key": "arc_walk_left_loop_003__A038_M",
+      "frames": 360,
+      "fps": 30,
+      "duration_s": 12.0,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_loop_003__A039.pkl",
+      "output": "arc_walk_left_loop_003__A039.csv",
+      "motion_key": "arc_walk_left_loop_003__A039",
+      "frames": 330,
+      "fps": 30,
+      "duration_s": 11.0,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_loop_003__A039_M.pkl",
+      "output": "arc_walk_left_loop_003__A039_M.csv",
+      "motion_key": "arc_walk_left_loop_003__A039_M",
+      "frames": 330,
+      "fps": 30,
+      "duration_s": 11.0,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_loop_003__A040.pkl",
+      "output": "arc_walk_left_loop_003__A040.csv",
+      "motion_key": "arc_walk_left_loop_003__A040",
+      "frames": 323,
+      "fps": 30,
+      "duration_s": 10.766666666666667,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_loop_003__A040_M.pkl",
+      "output": "arc_walk_left_loop_003__A040_M.csv",
+      "motion_key": "arc_walk_left_loop_003__A040_M",
+      "frames": 323,
+      "fps": 30,
+      "duration_s": 10.766666666666667,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_start_001__A037.pkl",
+      "output": "arc_walk_left_start_001__A037.csv",
+      "motion_key": "arc_walk_left_start_001__A037",
+      "frames": 209,
+      "fps": 30,
+      "duration_s": 6.966666666666667,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_start_001__A037_M.pkl",
+      "output": "arc_walk_left_start_001__A037_M.csv",
+      "motion_key": "arc_walk_left_start_001__A037_M",
+      "frames": 209,
+      "fps": 30,
+      "duration_s": 6.966666666666667,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_start_001__A038.pkl",
+      "output": "arc_walk_left_start_001__A038.csv",
+      "motion_key": "arc_walk_left_start_001__A038",
+      "frames": 165,
+      "fps": 30,
+      "duration_s": 5.5,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_start_001__A038_M.pkl",
+      "output": "arc_walk_left_start_001__A038_M.csv",
+      "motion_key": "arc_walk_left_start_001__A038_M",
+      "frames": 165,
+      "fps": 30,
+      "duration_s": 5.5,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_start_001__A039.pkl",
+      "output": "arc_walk_left_start_001__A039.csv",
+      "motion_key": "arc_walk_left_start_001__A039",
+      "frames": 176,
+      "fps": 30,
+      "duration_s": 5.866666666666666,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_start_001__A039_M.pkl",
+      "output": "arc_walk_left_start_001__A039_M.csv",
+      "motion_key": "arc_walk_left_start_001__A039_M",
+      "frames": 176,
+      "fps": 30,
+      "duration_s": 5.866666666666666,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_start_001__A040.pkl",
+      "output": "arc_walk_left_start_001__A040.csv",
+      "motion_key": "arc_walk_left_start_001__A040",
+      "frames": 177,
+      "fps": 30,
+      "duration_s": 5.9,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_start_001__A040_M.pkl",
+      "output": "arc_walk_left_start_001__A040_M.csv",
+      "motion_key": "arc_walk_left_start_001__A040_M",
+      "frames": 177,
+      "fps": 30,
+      "duration_s": 5.9,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_start_002__A037.pkl",
+      "output": "arc_walk_left_start_002__A037.csv",
+      "motion_key": "arc_walk_left_start_002__A037",
+      "frames": 177,
+      "fps": 30,
+      "duration_s": 5.9,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_start_002__A037_M.pkl",
+      "output": "arc_walk_left_start_002__A037_M.csv",
+      "motion_key": "arc_walk_left_start_002__A037_M",
+      "frames": 177,
+      "fps": 30,
+      "duration_s": 5.9,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_start_002__A038.pkl",
+      "output": "arc_walk_left_start_002__A038.csv",
+      "motion_key": "arc_walk_left_start_002__A038",
+      "frames": 185,
+      "fps": 30,
+      "duration_s": 6.166666666666667,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_start_002__A038_M.pkl",
+      "output": "arc_walk_left_start_002__A038_M.csv",
+      "motion_key": "arc_walk_left_start_002__A038_M",
+      "frames": 185,
+      "fps": 30,
+      "duration_s": 6.166666666666667,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_start_002__A039.pkl",
+      "output": "arc_walk_left_start_002__A039.csv",
+      "motion_key": "arc_walk_left_start_002__A039",
+      "frames": 193,
+      "fps": 30,
+      "duration_s": 6.433333333333334,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_start_002__A039_M.pkl",
+      "output": "arc_walk_left_start_002__A039_M.csv",
+      "motion_key": "arc_walk_left_start_002__A039_M",
+      "frames": 193,
+      "fps": 30,
+      "duration_s": 6.433333333333334,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_start_002__A040.pkl",
+      "output": "arc_walk_left_start_002__A040.csv",
+      "motion_key": "arc_walk_left_start_002__A040",
+      "frames": 169,
+      "fps": 30,
+      "duration_s": 5.633333333333334,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_start_002__A040_M.pkl",
+      "output": "arc_walk_left_start_002__A040_M.csv",
+      "motion_key": "arc_walk_left_start_002__A040_M",
+      "frames": 169,
+      "fps": 30,
+      "duration_s": 5.633333333333334,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_start_003__A037.pkl",
+      "output": "arc_walk_left_start_003__A037.csv",
+      "motion_key": "arc_walk_left_start_003__A037",
+      "frames": 614,
+      "fps": 30,
+      "duration_s": 20.466666666666665,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_start_003__A037_M.pkl",
+      "output": "arc_walk_left_start_003__A037_M.csv",
+      "motion_key": "arc_walk_left_start_003__A037_M",
+      "frames": 614,
+      "fps": 30,
+      "duration_s": 20.466666666666665,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_start_003__A038.pkl",
+      "output": "arc_walk_left_start_003__A038.csv",
+      "motion_key": "arc_walk_left_start_003__A038",
+      "frames": 554,
+      "fps": 30,
+      "duration_s": 18.466666666666665,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_start_003__A038_M.pkl",
+      "output": "arc_walk_left_start_003__A038_M.csv",
+      "motion_key": "arc_walk_left_start_003__A038_M",
+      "frames": 554,
+      "fps": 30,
+      "duration_s": 18.466666666666665,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_start_003__A039.pkl",
+      "output": "arc_walk_left_start_003__A039.csv",
+      "motion_key": "arc_walk_left_start_003__A039",
+      "frames": 544,
+      "fps": 30,
+      "duration_s": 18.133333333333333,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_start_003__A040.pkl",
+      "output": "arc_walk_left_start_003__A040.csv",
+      "motion_key": "arc_walk_left_start_003__A040",
+      "frames": 614,
+      "fps": 30,
+      "duration_s": 20.466666666666665,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_start_003__A040_M.pkl",
+      "output": "arc_walk_left_start_003__A040_M.csv",
+      "motion_key": "arc_walk_left_start_003__A040_M",
+      "frames": 614,
+      "fps": 30,
+      "duration_s": 20.466666666666665,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_001__A037.pkl",
+      "output": "arc_walk_left_stop_001__A037.csv",
+      "motion_key": "arc_walk_left_stop_001__A037",
+      "frames": 244,
+      "fps": 30,
+      "duration_s": 8.133333333333333,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_001__A037_M.pkl",
+      "output": "arc_walk_left_stop_001__A037_M.csv",
+      "motion_key": "arc_walk_left_stop_001__A037_M",
+      "frames": 244,
+      "fps": 30,
+      "duration_s": 8.133333333333333,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_001__A038.pkl",
+      "output": "arc_walk_left_stop_001__A038.csv",
+      "motion_key": "arc_walk_left_stop_001__A038",
+      "frames": 153,
+      "fps": 30,
+      "duration_s": 5.1,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_001__A038_M.pkl",
+      "output": "arc_walk_left_stop_001__A038_M.csv",
+      "motion_key": "arc_walk_left_stop_001__A038_M",
+      "frames": 153,
+      "fps": 30,
+      "duration_s": 5.1,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_001__A039.pkl",
+      "output": "arc_walk_left_stop_001__A039.csv",
+      "motion_key": "arc_walk_left_stop_001__A039",
+      "frames": 262,
+      "fps": 30,
+      "duration_s": 8.733333333333333,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_001__A039_M.pkl",
+      "output": "arc_walk_left_stop_001__A039_M.csv",
+      "motion_key": "arc_walk_left_stop_001__A039_M",
+      "frames": 262,
+      "fps": 30,
+      "duration_s": 8.733333333333333,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_001__A040.pkl",
+      "output": "arc_walk_left_stop_001__A040.csv",
+      "motion_key": "arc_walk_left_stop_001__A040",
+      "frames": 229,
+      "fps": 30,
+      "duration_s": 7.633333333333334,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_001__A040_M.pkl",
+      "output": "arc_walk_left_stop_001__A040_M.csv",
+      "motion_key": "arc_walk_left_stop_001__A040_M",
+      "frames": 229,
+      "fps": 30,
+      "duration_s": 7.633333333333334,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_002__A037.pkl",
+      "output": "arc_walk_left_stop_002__A037.csv",
+      "motion_key": "arc_walk_left_stop_002__A037",
+      "frames": 182,
+      "fps": 30,
+      "duration_s": 6.066666666666666,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_002__A037_M.pkl",
+      "output": "arc_walk_left_stop_002__A037_M.csv",
+      "motion_key": "arc_walk_left_stop_002__A037_M",
+      "frames": 182,
+      "fps": 30,
+      "duration_s": 6.066666666666666,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_002__A038.pkl",
+      "output": "arc_walk_left_stop_002__A038.csv",
+      "motion_key": "arc_walk_left_stop_002__A038",
+      "frames": 202,
+      "fps": 30,
+      "duration_s": 6.733333333333333,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_002__A038_M.pkl",
+      "output": "arc_walk_left_stop_002__A038_M.csv",
+      "motion_key": "arc_walk_left_stop_002__A038_M",
+      "frames": 202,
+      "fps": 30,
+      "duration_s": 6.733333333333333,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_002__A039.pkl",
+      "output": "arc_walk_left_stop_002__A039.csv",
+      "motion_key": "arc_walk_left_stop_002__A039",
+      "frames": 228,
+      "fps": 30,
+      "duration_s": 7.6,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_002__A039_M.pkl",
+      "output": "arc_walk_left_stop_002__A039_M.csv",
+      "motion_key": "arc_walk_left_stop_002__A039_M",
+      "frames": 228,
+      "fps": 30,
+      "duration_s": 7.6,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_002__A040.pkl",
+      "output": "arc_walk_left_stop_002__A040.csv",
+      "motion_key": "arc_walk_left_stop_002__A040",
+      "frames": 188,
+      "fps": 30,
+      "duration_s": 6.266666666666667,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_002__A040_M.pkl",
+      "output": "arc_walk_left_stop_002__A040_M.csv",
+      "motion_key": "arc_walk_left_stop_002__A040_M",
+      "frames": 188,
+      "fps": 30,
+      "duration_s": 6.266666666666667,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_003__A037.pkl",
+      "output": "arc_walk_left_stop_003__A037.csv",
+      "motion_key": "arc_walk_left_stop_003__A037",
+      "frames": 213,
+      "fps": 30,
+      "duration_s": 7.1,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_003__A037_M.pkl",
+      "output": "arc_walk_left_stop_003__A037_M.csv",
+      "motion_key": "arc_walk_left_stop_003__A037_M",
+      "frames": 213,
+      "fps": 30,
+      "duration_s": 7.1,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_003__A038.pkl",
+      "output": "arc_walk_left_stop_003__A038.csv",
+      "motion_key": "arc_walk_left_stop_003__A038",
+      "frames": 153,
+      "fps": 30,
+      "duration_s": 5.1,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_003__A038_M.pkl",
+      "output": "arc_walk_left_stop_003__A038_M.csv",
+      "motion_key": "arc_walk_left_stop_003__A038_M",
+      "frames": 153,
+      "fps": 30,
+      "duration_s": 5.1,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_003__A039.pkl",
+      "output": "arc_walk_left_stop_003__A039.csv",
+      "motion_key": "arc_walk_left_stop_003__A039",
+      "frames": 157,
+      "fps": 30,
+      "duration_s": 5.233333333333333,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_003__A039_M.pkl",
+      "output": "arc_walk_left_stop_003__A039_M.csv",
+      "motion_key": "arc_walk_left_stop_003__A039_M",
+      "frames": 157,
+      "fps": 30,
+      "duration_s": 5.233333333333333,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_003__A040.pkl",
+      "output": "arc_walk_left_stop_003__A040.csv",
+      "motion_key": "arc_walk_left_stop_003__A040",
+      "frames": 152,
+      "fps": 30,
+      "duration_s": 5.066666666666666,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_003__A040_M.pkl",
+      "output": "arc_walk_left_stop_003__A040_M.csv",
+      "motion_key": "arc_walk_left_stop_003__A040_M",
+      "frames": 152,
+      "fps": 30,
+      "duration_s": 5.066666666666666,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_004__A037.pkl",
+      "output": "arc_walk_left_stop_004__A037.csv",
+      "motion_key": "arc_walk_left_stop_004__A037",
+      "frames": 324,
+      "fps": 30,
+      "duration_s": 10.8,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_004__A037_M.pkl",
+      "output": "arc_walk_left_stop_004__A037_M.csv",
+      "motion_key": "arc_walk_left_stop_004__A037_M",
+      "frames": 324,
+      "fps": 30,
+      "duration_s": 10.8,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_004__A038.pkl",
+      "output": "arc_walk_left_stop_004__A038.csv",
+      "motion_key": "arc_walk_left_stop_004__A038",
+      "frames": 148,
+      "fps": 30,
+      "duration_s": 4.933333333333334,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_004__A038_M.pkl",
+      "output": "arc_walk_left_stop_004__A038_M.csv",
+      "motion_key": "arc_walk_left_stop_004__A038_M",
+      "frames": 148,
+      "fps": 30,
+      "duration_s": 4.933333333333334,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_004__A039.pkl",
+      "output": "arc_walk_left_stop_004__A039.csv",
+      "motion_key": "arc_walk_left_stop_004__A039",
+      "frames": 163,
+      "fps": 30,
+      "duration_s": 5.433333333333334,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_004__A039_M.pkl",
+      "output": "arc_walk_left_stop_004__A039_M.csv",
+      "motion_key": "arc_walk_left_stop_004__A039_M",
+      "frames": 163,
+      "fps": 30,
+      "duration_s": 5.433333333333334,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_004__A040.pkl",
+      "output": "arc_walk_left_stop_004__A040.csv",
+      "motion_key": "arc_walk_left_stop_004__A040",
+      "frames": 252,
+      "fps": 30,
+      "duration_s": 8.4,
+      "source_dofs": 29
+    },
+    {
+      "input": "arc_walk_left_stop_004__A040_M.pkl",
+      "output": "arc_walk_left_stop_004__A040_M.csv",
+      "motion_key": "arc_walk_left_stop_004__A040_M",
+      "frames": 252,
+      "fps": 30,
+      "duration_s": 8.4,
+      "source_dofs": 29
+    }
+  ]
+}

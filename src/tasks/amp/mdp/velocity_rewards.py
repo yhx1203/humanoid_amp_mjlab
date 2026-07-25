@@ -17,6 +17,14 @@ if TYPE_CHECKING:
 _DEFAULT_ASSET_CFG = SceneEntityCfg("robot")
 
 
+def _log_metric(
+  env: ManagerBasedRlEnv,
+  name: str,
+  value: torch.Tensor,
+) -> None:
+  env.extras.setdefault("log", {})[name] = value
+
+
 def track_linear_velocity(
   env: ManagerBasedRlEnv,
   std: float,
@@ -90,8 +98,10 @@ def angular_momentum_penalty(
   angmom_sensor: BuiltinSensor = env.scene[sensor_name]
   angmom = angmom_sensor.data
   angmom_magnitude_sq = torch.sum(torch.square(angmom), dim=-1)
-  env.extras["log"]["Metrics/angular_momentum_mean"] = torch.mean(
-    torch.sqrt(angmom_magnitude_sq)
+  _log_metric(
+    env,
+    "Metrics/angular_momentum_mean",
+    torch.mean(torch.sqrt(angmom_magnitude_sq)),
   )
   return angmom_magnitude_sq
 
@@ -156,9 +166,11 @@ def feet_slip(
   vel_xy_norm = torch.norm(foot_vel_xy, dim=-1)
   cost = torch.sum(torch.square(vel_xy_norm) * in_contact, dim=1) * active
   num_in_contact = torch.sum(in_contact)
-  env.extras["log"]["Metrics/slip_velocity_mean"] = torch.sum(
-    vel_xy_norm * in_contact
-  ) / torch.clamp(num_in_contact, min=1)
+  _log_metric(
+    env,
+    "Metrics/slip_velocity_mean",
+    torch.sum(vel_xy_norm * in_contact) / torch.clamp(num_in_contact, min=1),
+  )
   return cost
 
 
@@ -264,10 +276,16 @@ def commanded_stillness(
   penalty = torch.square(
     missing_speed / torch.clamp(required_linear_speed, min=1.0e-6)
   )
-  env.extras["log"]["Metrics/anti_still_actual_lin_speed"] = torch.mean(
-    actual_linear_speed
+  _log_metric(
+    env,
+    "Metrics/anti_still_actual_lin_speed",
+    torch.mean(actual_linear_speed),
   )
-  env.extras["log"]["Metrics/anti_still_penalty"] = torch.mean(penalty * active)
+  _log_metric(
+    env,
+    "Metrics/anti_still_penalty",
+    torch.mean(penalty * active),
+  )
   return penalty * active
 
 

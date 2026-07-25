@@ -737,14 +737,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--policy-hz", type=float, default=50.0)
     parser.add_argument("--connect-timeout", type=float, default=10.0)
     parser.add_argument("--state-timeout", type=float, default=0.2)
-    parser.add_argument("--stand-up-duration", type=float, default=2.0)
-    parser.add_argument("--stand-hold-duration", type=float, default=0.5)
+    parser.add_argument("--stand-up-duration", type=float, default=0.0)
+    parser.add_argument("--stand-hold-duration", type=float, default=0.0)
     parser.add_argument("--command-warmup", type=float, default=1.0)
     parser.add_argument("--cmd-x", type=float, default=0.5)
     parser.add_argument("--cmd-y", type=float, default=0.0)
     parser.add_argument("--cmd-yaw", type=float, default=0.0)
-    parser.add_argument("--cmd-x-range", type=float, nargs=2, default=(-0.6, 1.0))
-    parser.add_argument("--cmd-y-range", type=float, nargs=2, default=(0.0, 0.0))
+    parser.add_argument("--cmd-x-range", type=float, nargs=2, default=(-0.5, 1.0))
+    parser.add_argument("--cmd-y-range", type=float, nargs=2, default=(-0.5, 0.5))
     parser.add_argument("--cmd-yaw-range", type=float, nargs=2, default=(-1.0, 1.0))
     parser.add_argument(
         "--wireless",

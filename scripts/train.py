@@ -1,5 +1,7 @@
 """Script to train RL agent with RSL-RL."""
 
+# ruff: noqa: E402
+
 import logging
 import os
 import sys
@@ -8,6 +10,12 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Literal
+
+# Prefer this checkout over other editable projects that also expose a top-level
+# package named ``src``.
+_REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(_REPO_ROOT) not in sys.path:
+  sys.path.insert(0, str(_REPO_ROOT))
 
 import tyro
 
@@ -20,13 +28,13 @@ def _ensure_writable_warp_cache() -> None:
   cache_home = Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")).expanduser()
   try:
     cache_home.mkdir(parents=True, exist_ok=True)
-    probe = cache_home / ".unitree_amp_mjlab_write_test"
+    probe = cache_home / ".humanoid_amp_mjlab_write_test"
     probe.write_text("", encoding="utf-8")
     probe.unlink(missing_ok=True)
   except OSError:
     user_tag = str(getattr(os, "getuid", lambda: "user")())
     os.environ["WARP_CACHE_PATH"] = str(
-      Path(tempfile.gettempdir()) / f"unitree_amp_mjlab_warp_cache_{user_tag}"
+      Path(tempfile.gettempdir()) / f"humanoid_amp_mjlab_warp_cache_{user_tag}"
     )
 
 
@@ -196,7 +204,7 @@ def main():
   # Parse first argument to choose the task.
   # Import tasks to populate the registry.
   import mjlab.tasks  # noqa: F401
-  import src.tasks
+  import src.tasks  # noqa: F401
 
   all_tasks = list_tasks()
   chosen_task, remaining_args = tyro.cli(

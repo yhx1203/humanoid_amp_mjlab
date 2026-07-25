@@ -1,4 +1,4 @@
-"""Installation script for the 'unitree_amp_mjlab' python package."""
+"""Installation script for the 'humanoid_amp_mjlab' Python package."""
 
 from setuptools import setup, find_packages
 
@@ -13,7 +13,7 @@ INSTALL_REQUIRES = [
 
 # Installation operation
 setup(
-    name="unitree_amp_mjlab",
+    name="humanoid_amp_mjlab",
     packages=find_packages(include=["src", "src.*"]),
     version="0.0.1",
     install_requires=INSTALL_REQUIRES,

@@ -1,10 +1,18 @@
 """Script to play RL agent with RSL-RL."""
 
+# ruff: noqa: E402
+
 import os
 import sys
 from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 from typing import Any, Literal
+
+# Prefer this checkout over other editable projects that also expose a top-level
+# package named ``src``.
+_REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(_REPO_ROOT) not in sys.path:
+  sys.path.insert(0, str(_REPO_ROOT))
 
 import torch
 import tyro
@@ -47,6 +55,8 @@ class NativeVelocityKeyboardController:
 
   def handle_key(self, key: int) -> None:
     from mjlab.viewer.native.keys import (
+      KEY_A,
+      KEY_D,
       KEY_DOWN,
       KEY_KP_2,
       KEY_KP_4,
@@ -61,6 +71,10 @@ class NativeVelocityKeyboardController:
       self.command[0] += self.lin_vel_step
     elif key in (KEY_DOWN, KEY_KP_2):
       self.command[0] -= self.lin_vel_step
+    elif key == KEY_A:
+      self.command[1] += self.lin_vel_step
+    elif key == KEY_D:
+      self.command[1] -= self.lin_vel_step
     elif key in (KEY_LEFT, KEY_KP_4):
       self.command[2] += self.yaw_vel_step
     elif key in (KEY_RIGHT, KEY_KP_6):
@@ -74,6 +88,7 @@ class NativeVelocityKeyboardController:
     print(
       "[CMD] "
       f"lin_vel_x={self.command[0].item():+.2f} m/s, "
+      f"lin_vel_y={self.command[1].item():+.2f} m/s, "
       f"ang_vel_z={self.command[2].item():+.2f} rad/s"
     )
 
@@ -525,7 +540,8 @@ def run_play(task_id: str, cfg: PlayConfig):
       key_callback = keyboard_controller.handle_key
       print(
         "[INFO]: Native velocity keyboard enabled: "
-        "Up/Down adjusts lin_vel_x, Left/Right adjusts ang_vel_z."
+        "Up/Down adjusts lin_vel_x, A/D adjusts lin_vel_y, "
+        "Left/Right adjusts ang_vel_z."
       )
     NativeMujocoViewer(env, policy, key_callback=key_callback).run()
   elif resolved_viewer == "viser":
