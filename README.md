@@ -33,10 +33,10 @@ pip install -e .
 You can browse the motion set before training.
 
 ```bash
-python scripts/view_csv_in_mujoco.py src/assets/motions/g1_seed/arc_walk_left_loop_001__A037_M.csv \
+python scripts/view_csv_in_mujoco.py src/assets/motions/g1_seed/arc_walk_left_loop_001__A037.csv \
   --once 
 ```
-<!-- ![replay](docs/replay.gif) -->
+![replay](docs/replay.gif)
 
 
 ```bash
@@ -53,7 +53,7 @@ python scripts/play.py Unitree-G1-AMP-Flat \
   --num-envs 1 \
   --viewer viser
 ```
-<!-- ![viser](docs/viser.gif) -->
+![viser](docs/viser.gif)
 
 ## Sim2sim
 
@@ -93,9 +93,54 @@ python deploy/amp/sim2sim/g1_amp_sim2sim.py \
   --wireless 
 ```
 
-<!-- ![mujoco](docs/mujoco.gif) -->
+![mujoco](docs/mujoco.gif)
 
+## Sim2real
 
+**Preparation**
+
+connect g1
+
+![pre1](docs/pre1.png)
+
+```bash
+#validate
+ping 192.168.123.161
+```
+![pre2](docs/pre2.jpg)
+
+ifconfig查看123网段对应的网卡
+
+```bash
+cd humanoid_amp_mjlab
+conda activate mjlab
+
+python deploy/amp/sim2real/g1_amp_sim2real.py \
+  --checkpoint-file logs/rsl_rl/g1_amp_walking/amp_seed/model_2900.pt \
+  --network-interface enp3s0 \
+  --acknowledge-risk
+```
+
+## Robot Operation
+
+1. Press **START** once.
+
+2. Confirm that:
+   - The robot is standing normally.
+   - Both feet are in contact with the ground.
+   - The safety tether is still attached.
+
+3. Press **A** once to start the policy.
+
+### Controller Mapping
+
+- **Left stick up/down:** Move forward/backward
+- **Left stick left/right:** Strafe left/right
+- **Right stick left/right:** Turn left/right
+
+### Stop the Policy
+
+Press **B** to send damping commands for approximately 1 second.  
 
 ## Acknowledgements
 
@@ -109,4 +154,5 @@ This project builds upon and benefits from the following open-source repositorie
 
 
  
+
 
