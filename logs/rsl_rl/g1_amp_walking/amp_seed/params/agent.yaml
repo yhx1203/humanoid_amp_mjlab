@@ -1,0 +1,104 @@
+seed: 42
+num_steps_per_env: 24
+max_iterations: 10001
+obs_groups:
+  actor: !!python/tuple
+  - actor
+  critic: !!python/tuple
+  - critic
+save_interval: 100
+experiment_name: g1_amp_omnidirectional_walking
+run_name: amp_g1_seed2
+logger: wandb
+wandb_project: mjlab
+wandb_tags: !!python/tuple []
+resume: false
+load_run: .*
+load_checkpoint: model_.*.pt
+clip_actions: null
+upload_model: false
+class_name: OnPolicyRunner
+actor:
+  hidden_dims: !!python/tuple
+  - 512
+  - 256
+  - 128
+  activation: elu
+  obs_normalization: true
+  distribution_cfg:
+    init_std: 1.0
+    std_type: scalar
+critic:
+  hidden_dims: !!python/tuple
+  - 512
+  - 256
+  - 128
+  activation: elu
+  obs_normalization: true
+algorithm:
+  num_learning_epochs: 5
+  num_mini_batches: 4
+  learning_rate: 0.001
+  schedule: adaptive
+  gamma: 0.99
+  lam: 0.95
+  entropy_coef: 0.01
+  desired_kl: 0.01
+  max_grad_norm: 1.0
+  value_loss_coef: 1.0
+  use_clipped_value_loss: true
+  clip_param: 0.2
+  normalize_advantage_per_mini_batch: false
+  optimizer: adam
+  rnd_cfg: null
+  symmetry_cfg: null
+amp_motion_files: !!python/tuple
+- src/assets/motions/g1_seed/*.csv
+amp_motion_input_fps: 30.0
+amp_default_joint_pos: !!python/tuple
+- -0.1
+- 0.0
+- 0.0
+- 0.3
+- -0.2
+- 0.0
+- -0.1
+- 0.0
+- 0.0
+- 0.3
+- -0.2
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.35
+- 0.18
+- 0.0
+- 0.87
+- 0.0
+- 0.0
+- 0.0
+- 0.35
+- -0.18
+- 0.0
+- 0.87
+- 0.0
+- 0.0
+- 0.0
+amp_num_preload_transitions: 200000
+amp_replay_buffer_size: 100000
+amp_batch_size: null
+amp_reward_coef: 1.0
+amp_reward_scale_by_dt: true
+amp_task_reward_lerp: 0.8
+amp_discr_hidden_dims: !!python/tuple
+- 1024
+- 512
+amp_discr_learning_rate: 0.0001
+amp_discr_weight_decay: 0.0001
+amp_discr_head_weight_decay: 0.001
+amp_grad_penalty_coef: 10.0
+amp_max_grad_norm: 1.0
+amp_normalize: true
+amp_normalizer_clip: 5.0
+multi_gpu: null

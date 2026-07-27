@@ -49,7 +49,7 @@ python scripts/train.py Unitree-G1-AMP-Flat \
 ## Evaluate
 ```bash
 python scripts/play.py Unitree-G1-AMP-Flat \
-  --checkpoint-file logs/rsl_rl/g1_amp_walking/amp_seed/model_2900.pt \
+  --checkpoint-file logs/rsl_rl/g1_amp_walking/amp_seed/model_3200.pt \
   --num-envs 1 \
   --viewer viser
 ```
@@ -71,6 +71,7 @@ cd unitree_sdk2_python
 pip3 install -e .
 ```
 
+### Gamepad
 
 **Terminal 1**
 
@@ -89,11 +90,33 @@ cd humanoid_amp_mjlab
 conda activate mjlab
 
 python deploy/amp/sim2sim/g1_amp_sim2sim.py \
-  --checkpoint-file logs/rsl_rl/g1_amp_walking/amp_seed/model_2900.pt \
+  --policy-file logs/rsl_rl/g1_amp_walking/amp_seed/policy.onnx \
   --wireless 
 ```
 
 ![mujoco](docs/mujoco.gif)
+
+### Fixed Velocity Command
+
+**Terminal 1**
+
+```bash
+cd humanoid_amp_mjlab
+conda activate mjlab
+python deploy/amp/sim2sim/g1_mjlab_simulator.py
+```
+
+**Terminal 2**
+```bash
+cd humanoid_amp_mjlab
+conda activate mjlab
+
+python deploy/amp/sim2sim/g1_amp_sim2sim.py \
+  --policy-file logs/rsl_rl/g1_amp_walking/amp_seed/policy.onnx \
+  --cmd-x 0.6 \
+  --cmd-y 0.15 \
+  --cmd-yaw 0.3
+```
 
 ## Sim2real
 
@@ -109,14 +132,15 @@ ping 192.168.123.161
 ```
 ![pre2](docs/pre2.jpg)
 
-ifconfig查看123网段对应的网卡
+Use `ifconfig` to find the Ethernet interface on the `192.168.123.*` subnet.
+Replace `enp3s0` below with that interface name.
 
 ```bash
 cd humanoid_amp_mjlab
 conda activate mjlab
 
 python deploy/amp/sim2real/g1_amp_sim2real.py \
-  --checkpoint-file logs/rsl_rl/g1_amp_walking/amp_seed/model_2900.pt \
+  --policy-file logs/rsl_rl/g1_amp_walking/amp_seed/policy.onnx \
   --network-interface enp3s0 \
   --acknowledge-risk
 ```
@@ -154,5 +178,3 @@ This project builds upon and benefits from the following open-source repositorie
 
 
  
-
-

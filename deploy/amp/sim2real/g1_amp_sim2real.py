@@ -10,7 +10,6 @@ from pathlib import Path
 from typing import Sequence
 
 import numpy as np
-import torch
 from unitree_sdk2py.comm.motion_switcher.motion_switcher_client import (
     MotionSwitcherClient,
 )
@@ -27,26 +26,20 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from deploy.amp.sim2sim.g1_amp_sim2sim import (  # noqa: E402
-    CheckpointActor,
-    DeployParameters,
-    FALLBACK_ACTION_SCALE,
-    FALLBACK_DEFAULT_POS,
-    FALLBACK_KD,
-    FALLBACK_KP,
-    LOWCMD_MOTOR_COUNT,
-    LOWCMD_TOPIC,
-    LOWSTATE_TOPIC,
+from deploy.amp.g1_amp_onnx import (  # noqa: E402
     NUM_JOINTS,
     OBS_DIM,
+    OnnxPolicy,
     build_observation,
-    load_deploy_parameters,
     projected_gravity,
 )
 
 
 REAL_DDS_DOMAIN_ID = 0
 MODE_PR = 0
+LOWCMD_MOTOR_COUNT = 35
+LOWCMD_TOPIC = "rt/lowcmd"
+LOWSTATE_TOPIC = "rt/lowstate"
 
 # These are the G1 joint limits in the same 29-DOF HG motor order used by the
 # training model, policy metadata, LowState, and LowCmd.
@@ -118,6 +111,7 @@ JOINT_LIMIT_UPPER = np.array(
     ],
     dtype=np.float32,
 )
+
 
 BUTTON_START = 2
 BUTTON_A = 8
@@ -216,40 +210,13 @@ def _smoothstep(value: float) -> float:
     return value * value * (3.0 - 2.0 * value)
 
 
-def _load_parameters(
-    args: argparse.Namespace, checkpoint_path: Path
-) -> DeployParameters:
-    if args.ignore_metadata:
-        return DeployParameters(
-            default_pos=FALLBACK_DEFAULT_POS.copy(),
-            action_scale=FALLBACK_ACTION_SCALE.copy(),
-            kp=FALLBACK_KP.copy(),
-            kd=FALLBACK_KD.copy(),
-            metadata_path=None,
-        )
-    metadata_path = (
-        None
-        if args.metadata_file is None
-        else Path(args.metadata_file).expanduser().resolve()
-    )
-    return load_deploy_parameters(checkpoint_path, metadata_path)
-
-
 class G1AmpSim2Real:
     def __init__(self, args: argparse.Namespace) -> None:
         self.args = args
-        self.checkpoint_path = Path(args.checkpoint_file).expanduser().resolve()
-        if not self.checkpoint_path.exists():
-            raise FileNotFoundError(f"Checkpoint not found: {self.checkpoint_path}")
-
-        self.params = _load_parameters(args, self.checkpoint_path)
+        self.actor = OnnxPolicy(Path(args.policy_file))
+        self.policy_path = self.actor.policy_path
+        self.params = self.actor.params
         self._validate_deploy_parameters()
-        try:
-            torch.set_num_threads(1)
-            torch.set_num_interop_threads(1)
-        except RuntimeError:
-            pass
-        self.actor = CheckpointActor(self.checkpoint_path, args.device)
 
         self.command_ranges = np.asarray(
             (args.cmd_x_range, args.cmd_y_range, args.cmd_yaw_range),
@@ -734,13 +701,10 @@ class G1AmpSim2Real:
         )
 
     def print_summary(self) -> None:
-        print(f"[INFO] Checkpoint: {self.checkpoint_path}")
-        if self.params.metadata_path is None:
-            print(
-                "[WARN] Using built-in deployment parameters; no ONNX metadata loaded."
-            )
-        else:
-            print(f"[INFO] Metadata:   {self.params.metadata_path}")
+        print(f"[INFO] ONNX policy: {self.policy_path}")
+        print(f"[INFO] ONNX provider: {self.actor.provider}")
+        if self.actor.run_path:
+            print(f"[INFO] Training run: {self.actor.run_path}")
         if self.args.network_interface:
             print(
                 f"[INFO] Real DDS domain={REAL_DDS_DOMAIN_ID}, "
@@ -838,26 +802,18 @@ def _validate_range(
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
-            "Deploy a 29-DOF G1 AMP checkpoint to real hardware with explicit "
+            "Deploy a 29-DOF G1 AMP ONNX policy to real hardware with explicit "
             "takeover and software safety checks."
         )
     )
     parser.add_argument(
-        "--checkpoint-file",
+        "--policy-file",
         required=True,
-        help="RSL-RL model_*.pt checkpoint produced by this repository.",
+        help=(
+            "Exported policy.onnx used for both inference and required deployment "
+            "metadata."
+        ),
     )
-    parser.add_argument(
-        "--metadata-file",
-        default=None,
-        help="Optional policy.onnx containing deployment metadata.",
-    )
-    parser.add_argument(
-        "--ignore-metadata",
-        action="store_true",
-        help="Use built-in parameters even if policy.onnx exists beside the checkpoint.",
-    )
-    parser.add_argument("--device", default="cpu", help="Torch inference device.")
     parser.add_argument(
         "--network-interface",
         default=None,
@@ -887,7 +843,7 @@ def parse_args() -> argparse.Namespace:
     mode.add_argument(
         "--validate-only",
         action="store_true",
-        help="Validate checkpoint and targets without opening DDS.",
+        help="Validate the ONNX policy, metadata, and targets without opening DDS.",
     )
     mode.add_argument(
         "--state-check-only",

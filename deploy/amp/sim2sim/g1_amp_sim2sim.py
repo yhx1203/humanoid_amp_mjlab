@@ -1,15 +1,13 @@
 from __future__ import annotations
 
 import argparse
-import re
+import sys
 import threading
 import time
 from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
-import torch
-import torch.nn.functional as F
 from unitree_sdk2py.core.channel import (
     ChannelFactoryInitialize,
     ChannelPublisher,
@@ -20,49 +18,26 @@ from unitree_sdk2py.idl.unitree_go.msg.dds_ import WirelessController_
 from unitree_sdk2py.idl.unitree_hg.msg.dds_ import LowCmd_, LowState_
 from unitree_sdk2py.utils.crc import CRC
 
+REPO_ROOT = Path(__file__).resolve().parents[3]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
-NUM_JOINTS = 29
-OBS_DIM = 96
+from deploy.amp.g1_amp_onnx import (  # noqa: E402
+    JOINT_NAMES as JOINT_NAMES,
+    NUM_JOINTS,
+    OBS_DIM,
+    OnnxPolicy,
+    build_observation,
+    projected_gravity,
+)
+
+
 LOWCMD_MOTOR_COUNT = 35
 LOWCMD_TOPIC = "rt/lowcmd"
 LOWSTATE_TOPIC = "rt/lowstate"
 WIRELESS_TOPIC = "rt/wirelesscontroller"
 
-# The order is both the MJLab natural joint order and the G1 29-DOF HG IDL
-# motor order (indices 0..28).
-JOINT_NAMES = (
-    "left_hip_pitch_joint",
-    "left_hip_roll_joint",
-    "left_hip_yaw_joint",
-    "left_knee_joint",
-    "left_ankle_pitch_joint",
-    "left_ankle_roll_joint",
-    "right_hip_pitch_joint",
-    "right_hip_roll_joint",
-    "right_hip_yaw_joint",
-    "right_knee_joint",
-    "right_ankle_pitch_joint",
-    "right_ankle_roll_joint",
-    "waist_yaw_joint",
-    "waist_roll_joint",
-    "waist_pitch_joint",
-    "left_shoulder_pitch_joint",
-    "left_shoulder_roll_joint",
-    "left_shoulder_yaw_joint",
-    "left_elbow_joint",
-    "left_wrist_roll_joint",
-    "left_wrist_pitch_joint",
-    "left_wrist_yaw_joint",
-    "right_shoulder_pitch_joint",
-    "right_shoulder_roll_joint",
-    "right_shoulder_yaw_joint",
-    "right_elbow_joint",
-    "right_wrist_roll_joint",
-    "right_wrist_pitch_joint",
-    "right_wrist_yaw_joint",
-)
-
-# Fallbacks are used only when no companion policy.onnx metadata file exists.
+# Training HOME pose used to initialize the MuJoCo simulator.
 FALLBACK_DEFAULT_POS = np.array(
     [
         -0.1,
@@ -97,117 +72,6 @@ FALLBACK_DEFAULT_POS = np.array(
     ],
     dtype=np.float32,
 )
-FALLBACK_ACTION_SCALE = np.array(
-    [
-        0.548,
-        0.351,
-        0.548,
-        0.351,
-        0.439,
-        0.439,
-        0.548,
-        0.351,
-        0.548,
-        0.351,
-        0.439,
-        0.439,
-        0.548,
-        0.439,
-        0.439,
-        0.439,
-        0.439,
-        0.439,
-        0.439,
-        0.439,
-        0.075,
-        0.075,
-        0.439,
-        0.439,
-        0.439,
-        0.439,
-        0.439,
-        0.075,
-        0.075,
-    ],
-    dtype=np.float32,
-)
-FALLBACK_KP = np.array(
-    [
-        40.179,
-        99.098,
-        40.179,
-        99.098,
-        28.501,
-        28.501,
-        40.179,
-        99.098,
-        40.179,
-        99.098,
-        28.501,
-        28.501,
-        40.179,
-        28.501,
-        28.501,
-        14.251,
-        14.251,
-        14.251,
-        14.251,
-        14.251,
-        16.778,
-        16.778,
-        14.251,
-        14.251,
-        14.251,
-        14.251,
-        14.251,
-        16.778,
-        16.778,
-    ],
-    dtype=np.float32,
-)
-FALLBACK_KD = np.array(
-    [
-        2.558,
-        6.309,
-        2.558,
-        6.309,
-        1.814,
-        1.814,
-        2.558,
-        6.309,
-        2.558,
-        6.309,
-        1.814,
-        1.814,
-        2.558,
-        1.814,
-        1.814,
-        0.907,
-        0.907,
-        0.907,
-        0.907,
-        0.907,
-        1.068,
-        1.068,
-        0.907,
-        0.907,
-        0.907,
-        0.907,
-        0.907,
-        1.068,
-        1.068,
-    ],
-    dtype=np.float32,
-)
-
-
-@dataclass(frozen=True)
-class DeployParameters:
-    default_pos: np.ndarray
-    action_scale: np.ndarray
-    kp: np.ndarray
-    kd: np.ndarray
-    metadata_path: Path | None
 
 
 @dataclass(frozen=True)
@@ -218,180 +82,6 @@ class RobotState:
     angular_velocity: np.ndarray
     mode_machine: int
     received_at: float
-
-
-def _parse_metadata_array(
-    metadata: dict[str, str], key: str, fallback: np.ndarray
-) -> np.ndarray:
-    value = metadata.get(key)
-    if value is None:
-        return fallback.copy()
-    array = np.fromstring(value, sep=",", dtype=np.float32)
-    if array.shape != (NUM_JOINTS,):
-        raise ValueError(
-            f"ONNX metadata '{key}' must contain {NUM_JOINTS} values, got {array.size}."
-        )
-    return array
-
-
-def load_deploy_parameters(
-    checkpoint_path: Path, metadata_path: Path | None
-) -> DeployParameters:
-    """Load controller parameters from the companion ONNX metadata when present."""
-    resolved_metadata = metadata_path
-    explicitly_requested = metadata_path is not None
-    if resolved_metadata is None:
-        candidate = checkpoint_path.parent / "policy.onnx"
-        resolved_metadata = candidate if candidate.exists() else None
-
-    if resolved_metadata is None:
-        return DeployParameters(
-            default_pos=FALLBACK_DEFAULT_POS.copy(),
-            action_scale=FALLBACK_ACTION_SCALE.copy(),
-            kp=FALLBACK_KP.copy(),
-            kd=FALLBACK_KD.copy(),
-            metadata_path=None,
-        )
-    if not resolved_metadata.exists():
-        if explicitly_requested:
-            raise FileNotFoundError(f"Metadata file not found: {resolved_metadata}")
-        raise AssertionError("Implicit metadata path must exist.")
-
-    try:
-        import onnx
-    except ImportError as exc:
-        raise ImportError(
-            "A policy.onnx metadata file was found, but Python package 'onnx' is not "
-            "installed. Install it or pass --ignore-metadata to use built-in values."
-        ) from exc
-
-    model = onnx.load(str(resolved_metadata), load_external_data=False)
-    metadata = {entry.key: entry.value for entry in model.metadata_props}
-    metadata_joints = tuple(filter(None, metadata.get("joint_names", "").split(",")))
-    if metadata_joints and metadata_joints != JOINT_NAMES:
-        raise ValueError(
-            "Policy joint order in ONNX metadata does not match the G1 29-DOF DDS "
-            "order. Refusing to send commands with an unsafe joint mapping."
-        )
-
-    return DeployParameters(
-        default_pos=_parse_metadata_array(
-            metadata, "default_joint_pos", FALLBACK_DEFAULT_POS
-        ),
-        action_scale=_parse_metadata_array(
-            metadata, "action_scale", FALLBACK_ACTION_SCALE
-        ),
-        kp=_parse_metadata_array(metadata, "joint_stiffness", FALLBACK_KP),
-        kd=_parse_metadata_array(metadata, "joint_damping", FALLBACK_KD),
-        metadata_path=resolved_metadata.resolve(),
-    )
-
-
-class CheckpointActor:
-    """Minimal deterministic RSL-RL actor loader with no rsl_rl dependency."""
-
-    def __init__(self, checkpoint_path: Path, device: str) -> None:
-        checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=True)
-        if "actor_state_dict" not in checkpoint:
-            raise KeyError(f"No actor_state_dict in checkpoint: {checkpoint_path}")
-        state_dict = checkpoint["actor_state_dict"]
-
-        # Current checkpoints use mlp.*, while older RSL-RL checkpoints may use
-        # actor.*. Both contain numbered Linear layers.
-        layer_pattern = re.compile(r"^(?:mlp|actor)\.(\d+)\.weight$")
-        layer_entries: list[tuple[int, torch.Tensor, torch.Tensor]] = []
-        for name, weight in state_dict.items():
-            match = layer_pattern.match(name)
-            if match is None:
-                continue
-            prefix = name.rsplit(".", 1)[0]
-            bias_name = f"{prefix}.bias"
-            if bias_name not in state_dict:
-                raise KeyError(f"Missing actor layer bias '{bias_name}'.")
-            layer_entries.append((int(match.group(1)), weight, state_dict[bias_name]))
-        layer_entries.sort(key=lambda item: item[0])
-        if not layer_entries:
-            raise ValueError("Could not find actor MLP layers in checkpoint.")
-
-        first_input_dim = int(layer_entries[0][1].shape[1])
-        final_output_dim = int(layer_entries[-1][1].shape[0])
-        if first_input_dim != OBS_DIM or final_output_dim != NUM_JOINTS:
-            raise ValueError(
-                "Checkpoint dimensions do not match this deployment: "
-                f"expected {OBS_DIM}->{NUM_JOINTS}, got "
-                f"{first_input_dim}->{final_output_dim}."
-            )
-
-        self.weights = [entry[1].to(device=device) for entry in layer_entries]
-        self.biases = [entry[2].to(device=device) for entry in layer_entries]
-        mean = state_dict.get("obs_normalizer._mean")
-        std = state_dict.get("obs_normalizer._std")
-        if mean is None:
-            mean = state_dict.get("actor_obs_normalizer._mean")
-        if std is None:
-            std = state_dict.get("actor_obs_normalizer._std")
-        if mean is None or std is None:
-            self.mean = torch.zeros((1, OBS_DIM), device=device)
-            self.std = torch.ones((1, OBS_DIM), device=device)
-            self.uses_normalizer = False
-        else:
-            self.mean = mean.to(device=device)
-            self.std = std.to(device=device)
-            self.uses_normalizer = True
-        self.device = device
-
-    def __call__(self, observation: np.ndarray) -> np.ndarray:
-        obs = torch.from_numpy(observation).reshape(1, OBS_DIM).to(self.device)
-        # EmpiricalNormalization in RSL-RL uses eps=1e-2.
-        value = (obs - self.mean) / (self.std + 1.0e-2)
-        with torch.inference_mode():
-            for index, (weight, bias) in enumerate(zip(self.weights, self.biases)):
-                value = F.linear(value, weight, bias)
-                if index + 1 < len(self.weights):
-                    value = F.elu(value)
-        action = value.squeeze(0).detach().cpu().numpy().astype(np.float32)
-        if action.shape != (NUM_JOINTS,) or not np.all(np.isfinite(action)):
-            raise FloatingPointError("Policy produced an invalid action.")
-        return action
-
-
-def projected_gravity(quaternion_wxyz: np.ndarray) -> np.ndarray:
-    """Rotate world gravity [0, 0, -1] into the pelvis frame."""
-    quat = np.asarray(quaternion_wxyz, dtype=np.float64)
-    norm = float(np.linalg.norm(quat))
-    if norm < 1.0e-8:
-        raise FloatingPointError("Received a zero-norm IMU quaternion.")
-    w, x, y, z = quat / norm
-    # Third row of R(body->world), negated: R.T @ [0, 0, -1].
-    return np.array(
-        [
-            -2.0 * (x * z - y * w),
-            -2.0 * (y * z + x * w),
-            -(1.0 - 2.0 * (x * x + y * y)),
-        ],
-        dtype=np.float32,
-    )
-
-
-def build_observation(
-    state: RobotState,
-    command: np.ndarray,
-    last_action: np.ndarray,
-    default_pos: np.ndarray,
-) -> np.ndarray:
-    observation = np.concatenate(
-        (
-            state.angular_velocity.astype(np.float32),
-            projected_gravity(state.quaternion_wxyz),
-            command.astype(np.float32),
-            state.joint_pos.astype(np.float32) - default_pos,
-            state.joint_vel.astype(np.float32),
-            last_action.astype(np.float32),
-        )
-    )
-    if observation.shape != (OBS_DIM,) or not np.all(np.isfinite(observation)):
-        raise FloatingPointError("LowState produced an invalid policy observation.")
-    return observation
 
 
 def _smoothstep(value: float) -> float:
@@ -449,33 +139,9 @@ class VelocityCommand:
 class G1AmpSim2Sim:
     def __init__(self, args: argparse.Namespace) -> None:
         self.args = args
-        checkpoint_path = Path(args.checkpoint_file).expanduser().resolve()
-        if not checkpoint_path.exists():
-            raise FileNotFoundError(f"Checkpoint not found: {checkpoint_path}")
-        metadata_path = (
-            None
-            if args.ignore_metadata or args.metadata_file is None
-            else Path(args.metadata_file).expanduser().resolve()
-        )
-        if args.ignore_metadata:
-            # A non-existent sentinel prevents implicit companion-file discovery.
-            self.params = DeployParameters(
-                default_pos=FALLBACK_DEFAULT_POS.copy(),
-                action_scale=FALLBACK_ACTION_SCALE.copy(),
-                kp=FALLBACK_KP.copy(),
-                kd=FALLBACK_KD.copy(),
-                metadata_path=None,
-            )
-        else:
-            self.params = load_deploy_parameters(checkpoint_path, metadata_path)
-
-        try:
-            torch.set_num_threads(1)
-            torch.set_num_interop_threads(1)
-        except RuntimeError:
-            pass
-        self.actor = CheckpointActor(checkpoint_path, args.device)
-        self.checkpoint_path = checkpoint_path
+        self.actor = OnnxPolicy(Path(args.policy_file))
+        self.policy_path = self.actor.policy_path
+        self.params = self.actor.params
         self.command = VelocityCommand(args)
         self._state: RobotState | None = None
         self._state_lock = threading.Lock()
@@ -590,13 +256,10 @@ class G1AmpSim2Sim:
         self._publisher.Write(self._lowcmd)
 
     def print_summary(self) -> None:
-        print(f"[INFO] Checkpoint: {self.checkpoint_path}")
-        if self.params.metadata_path is None:
-            print(
-                "[WARN] Using built-in deployment parameters (no ONNX metadata loaded)."
-            )
-        else:
-            print(f"[INFO] Metadata:   {self.params.metadata_path}")
+        print(f"[INFO] ONNX policy: {self.policy_path}")
+        print(f"[INFO] ONNX provider: {self.actor.provider}")
+        if self.actor.run_path:
+            print(f"[INFO] Training run: {self.actor.run_path}")
         print(
             f"[INFO] DDS domain={self.args.domain_id}, interface={self.args.interface}, "
             f"low-level={self.args.low_level_hz:.1f} Hz, policy={self.args.policy_hz:.1f} Hz"
@@ -713,24 +376,16 @@ class G1AmpSim2Sim:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Run an MJLab G1 AMP checkpoint through Unitree SDK2 DDS."
+        description="Run an MJLab G1 AMP ONNX policy through Unitree SDK2 DDS."
     )
     parser.add_argument(
-        "--checkpoint-file",
+        "--policy-file",
         required=True,
-        help="RSL-RL model_*.pt checkpoint produced by this repository.",
+        help=(
+            "Exported policy.onnx used for both inference and required deployment "
+            "metadata."
+        ),
     )
-    parser.add_argument(
-        "--metadata-file",
-        default=None,
-        help="Optional policy.onnx containing deployment metadata (default: beside checkpoint).",
-    )
-    parser.add_argument(
-        "--ignore-metadata",
-        action="store_true",
-        help="Use built-in G1 parameters even if a companion policy.onnx exists.",
-    )
-    parser.add_argument("--device", default="cpu", help="Torch inference device.")
     parser.add_argument("--domain-id", type=int, default=1)
     parser.add_argument("--interface", default="lo")
     parser.add_argument("--low-level-hz", type=float, default=200.0)
@@ -769,7 +424,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--validate-only",
         action="store_true",
-        help="Validate checkpoint/metadata without opening DDS channels.",
+        help="Validate the ONNX policy and metadata without opening DDS channels.",
     )
     args = parser.parse_args()
     if args.low_level_hz <= 0.0 or args.policy_hz <= 0.0:
@@ -797,7 +452,7 @@ def main() -> None:
         zero_obs = np.zeros(OBS_DIM, dtype=np.float32)
         action = controller.actor(zero_obs)
         print(
-            f"[OK] checkpoint validated: obs={OBS_DIM}, actions={action.size}, "
+            f"[OK] ONNX policy validated: obs={OBS_DIM}, actions={action.size}, "
             f"zero_obs_action_norm={np.linalg.norm(action):.4f}"
         )
         return
